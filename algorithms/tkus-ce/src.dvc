@@ -1,0 +1,13 @@
+md5: 9f4fb7aaf4daeb8bc25bc752aa1e0f77
+frozen: true
+deps:
+- path: src
+  repo:
+    url: https://github.com/imadtg/TKUS-CE.git
+    rev_lock: 89692d2ec47da35b334c5a015a5e4093066a448a
+outs:
+- md5: 669ad93f483fae9cef38ff88f461fb5a.dir
+  size: 80100
+  nfiles: 15
+  hash: md5
+  path: src

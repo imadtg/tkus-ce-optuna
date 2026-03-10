@@ -1,0 +1,16 @@
+schema: '2.0'
+stages:
+  compile:
+    cmd: mkdir -p ../../.cache/jbang runner && JBANG_DIR=../../.cache/jbang 
+      jbang --fresh export fatjar -O runner/tkus-ce-fatjar.jar src/Main.java
+    deps:
+    - path: src
+      hash: md5
+      md5: 669ad93f483fae9cef38ff88f461fb5a.dir
+      size: 80100
+      nfiles: 15
+    outs:
+    - path: runner/tkus-ce-fatjar.jar
+      hash: md5
+      md5: b572d7f112744545411890e4c8f523d2
+      size: 785681

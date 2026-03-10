@@ -1,0 +1,7 @@
+stages:
+  compile:
+    cmd: mkdir -p ../../.cache/jbang runner && JBANG_DIR=../../.cache/jbang jbang --fresh export fatjar -O runner/tkus-ce-fatjar.jar src/Main.java
+    deps:
+      - src
+    outs:
+      - runner/tkus-ce-fatjar.jar
