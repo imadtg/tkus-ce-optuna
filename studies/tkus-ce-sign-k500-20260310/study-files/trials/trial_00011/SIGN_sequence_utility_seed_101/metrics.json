@@ -1,0 +1,18 @@
+{
+  "seed": 101,
+  "runtime_seconds": 24.67,
+  "peak_rss_mb": 250.9609375,
+  "average_utility": 3337.512,
+  "total_utility": 1668756,
+  "num_sequences": 500,
+  "return_code": 0,
+  "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00011/SIGN_sequence_utility_seed_101/repeat_00/output.txt",
+  "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00011/SIGN_sequence_utility_seed_101/repeat_00/iteration_metrics.csv",
+  "repeat_runtimes": [
+    24.67
+  ],
+  "repeat_peak_rss_mb": [
+    250.9609375
+  ],
+  "representative_repeat_index": 0
+}

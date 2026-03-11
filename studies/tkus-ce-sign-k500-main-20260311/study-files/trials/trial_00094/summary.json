@@ -1,0 +1,122 @@
+{
+  "params": {
+    "n_grams": 5,
+    "model_confidence": 0.5,
+    "end_confidence": 0.9,
+    "end_prob_prior": 0.5,
+    "alpha": 0.1,
+    "rho": 0.1,
+    "pop_size": 50,
+    "max_iterations": 1000
+  },
+  "datasets": [
+    "/home/pc/Desktop/TKUS-CE/testdata/smoke/SIGN_sequence_utility.txt"
+  ],
+  "k": 500,
+  "seeds": [
+    11,
+    29,
+    47,
+    71,
+    101
+  ],
+  "mean_runtime_seconds": 14.0,
+  "std_runtime_seconds": 0.14899664425751338,
+  "mean_average_utility": 5220.8612,
+  "std_average_utility": 68.99793428328145,
+  "mean_total_utility": 2610430.6,
+  "mean_peak_rss_mb": 408.390625,
+  "std_peak_rss_mb": 21.949707112715295,
+  "seed_runs": [
+    {
+      "seed": 11,
+      "runtime_seconds": 13.91,
+      "peak_rss_mb": 421.55859375,
+      "average_utility": 5273.532,
+      "total_utility": 2636766,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_11/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_11/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        13.91
+      ],
+      "repeat_peak_rss_mb": [
+        421.55859375
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 29,
+      "runtime_seconds": 14.1,
+      "peak_rss_mb": 417.37109375,
+      "average_utility": 5182.43,
+      "total_utility": 2591215,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_29/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_29/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        14.1
+      ],
+      "repeat_peak_rss_mb": [
+        417.37109375
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 47,
+      "runtime_seconds": 14.24,
+      "peak_rss_mb": 416.2421875,
+      "average_utility": 5181.746,
+      "total_utility": 2590873,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_47/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_47/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        14.24
+      ],
+      "repeat_peak_rss_mb": [
+        416.2421875
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 71,
+      "runtime_seconds": 13.92,
+      "peak_rss_mb": 364.7265625,
+      "average_utility": 5139.19,
+      "total_utility": 2569595,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_71/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_71/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        13.92
+      ],
+      "repeat_peak_rss_mb": [
+        364.7265625
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 101,
+      "runtime_seconds": 13.83,
+      "peak_rss_mb": 422.0546875,
+      "average_utility": 5327.408,
+      "total_utility": 2663704,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_101/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00094/SIGN_sequence_utility_seed_101/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        13.83
+      ],
+      "repeat_peak_rss_mb": [
+        422.0546875
+      ],
+      "representative_repeat_index": 0
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "study_name": "tkus-ce-sign-k500-hvcheck-20260311",
+  "storage": "sqlite:////home/pc/Desktop/tkus-ce-optuna/artifacts/optuna-monitor/tkus-ce-sign-k500-hvcheck-20260311/study.sqlite3",
+  "datasets": [
+    "/home/pc/Desktop/TKUS-CE/testdata/smoke/SIGN_sequence_utility.txt"
+  ],
+  "k": 500,
+  "hypervolume_reference": {
+    "runtime_ref": 1000.0,
+    "utility_ref": 0.0
+  },
+  "completed_trials": 6,
+  "stop_reason": null,
+  "best_trials": [
+    {
+      "number": 0,
+      "values": [
+        45.948,
+        11868.233199999999
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.5,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 0.1,
+        "rho": 0.5,
+        "pop_size": 1000,
+        "max_iterations": 1000
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-hvcheck-20260311/trials/trial_00000"
+    },
+    {
+      "number": 1,
+      "values": [
+        1.766,
+        3886.7594786427144
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 1.0,
+        "end_confidence": 1.0,
+        "end_prob_prior": 0.1,
+        "alpha": 10.0,
+        "rho": 0.5,
+        "pop_size": 200,
+        "max_iterations": 50
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-hvcheck-20260311/trials/trial_00001"
+    },
+    {
+      "number": 3,
+      "values": [
+        10.436,
+        10012.923862674652
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.5,
+        "end_confidence": 0.9,
+        "end_prob_prior": 0.1,
+        "alpha": 10.0,
+        "rho": 0.2,
+        "pop_size": 1000,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-hvcheck-20260311/trials/trial_00003"
+    },
+    {
+      "number": 4,
+      "values": [
+        1.988,
+        6195.454
+      ],
+      "params": {
+        "n_grams": 0,
+        "model_confidence": 0.9,
+        "end_confidence": 0.9,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.2,
+        "pop_size": 200,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-hvcheck-20260311/trials/trial_00004"
+    }
+  ]
+}

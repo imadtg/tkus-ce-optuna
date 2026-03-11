@@ -1,0 +1,122 @@
+{
+  "params": {
+    "n_grams": 3,
+    "model_confidence": 0.5,
+    "end_confidence": 1.0,
+    "end_prob_prior": 0.5,
+    "alpha": 0.1,
+    "rho": 0.1,
+    "pop_size": 200,
+    "max_iterations": 50
+  },
+  "datasets": [
+    "/home/pc/Desktop/TKUS-CE/testdata/smoke/SIGN_sequence_utility.txt"
+  ],
+  "k": 500,
+  "seeds": [
+    11,
+    29,
+    47,
+    71,
+    101
+  ],
+  "mean_runtime_seconds": 10.48,
+  "std_runtime_seconds": 0.2844644090215861,
+  "mean_average_utility": 302.69008225699923,
+  "std_average_utility": 9.622680744713467,
+  "mean_total_utility": 737606.8,
+  "mean_peak_rss_mb": 399.69921875,
+  "std_peak_rss_mb": 25.514519241770397,
+  "seed_runs": [
+    {
+      "seed": 11,
+      "runtime_seconds": 10.51,
+      "peak_rss_mb": 414.66796875,
+      "average_utility": 301.01848808545606,
+      "total_utility": 732679,
+      "num_sequences": 2434,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_11/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_11/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        10.51
+      ],
+      "repeat_peak_rss_mb": [
+        414.66796875
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 29,
+      "runtime_seconds": 10.71,
+      "peak_rss_mb": 348.8984375,
+      "average_utility": 317.02079934747144,
+      "total_utility": 777335,
+      "num_sequences": 2452,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_29/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_29/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        10.71
+      ],
+      "repeat_peak_rss_mb": [
+        348.8984375
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 47,
+      "runtime_seconds": 10.52,
+      "peak_rss_mb": 408.4609375,
+      "average_utility": 294.1007751937984,
+      "total_utility": 720841,
+      "num_sequences": 2451,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_47/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_47/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        10.52
+      ],
+      "repeat_peak_rss_mb": [
+        408.4609375
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 71,
+      "runtime_seconds": 10.72,
+      "peak_rss_mb": 415.10546875,
+      "average_utility": 309.9492140266022,
+      "total_utility": 768984,
+      "num_sequences": 2481,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_71/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_71/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        10.72
+      ],
+      "repeat_peak_rss_mb": [
+        415.10546875
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 101,
+      "runtime_seconds": 9.94,
+      "peak_rss_mb": 411.36328125,
+      "average_utility": 291.36113463166805,
+      "total_utility": 688195,
+      "num_sequences": 2362,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_101/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311/trials/trial_00066/SIGN_sequence_utility_seed_101/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        9.94
+      ],
+      "repeat_peak_rss_mb": [
+        411.36328125
+      ],
+      "representative_repeat_index": 0
+    }
+  ]
+}

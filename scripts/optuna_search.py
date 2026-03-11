@@ -1,10 +1,4 @@
-#!/usr/bin/env -S uv run
-# /// script
-# dependencies = [
-#   "matplotlib>=3.9",
-#   "optuna>=4.3",
-# ]
-# ///
+#!/usr/bin/env python3
 
 from __future__ import annotations
 
@@ -14,8 +8,10 @@ import json
 import math
 import os
 import re
+import shutil
 import statistics
 import subprocess
+import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -23,6 +19,10 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import optuna
+from optuna.artifacts import FileSystemArtifactStore
+from optuna.artifacts import upload_artifact
+from optuna_dashboard import save_note
+from optuna_dashboard.artifact import get_artifact_path
 from optuna.trial import TrialState
 
 
@@ -56,15 +56,74 @@ class SeedRunResult:
 
 
 class HypervolumeStagnationStopper:
-    def __init__(self, min_trials: int, patience: int, min_improvement: float) -> None:
+    def __init__(
+        self,
+        min_trials: int,
+        patience: int,
+        min_improvement: float,
+        runtime_ref: float,
+        utility_ref: float,
+        debug: bool = False,
+        debug_log_path: Path | None = None,
+    ) -> None:
         self.min_trials = min_trials
         self.patience = patience
         self.min_improvement = min_improvement
+        self.runtime_ref = runtime_ref
+        self.utility_ref = utility_ref
         self.best_hv = float("-inf")
         self.stale_callbacks = 0
         self.history: list[dict[str, float | int]] = []
+        self.debug = debug
+        self.debug_log_path = debug_log_path
+        self._initialized = False
+
+    def _hydrate_from_study(self, study: optuna.Study) -> None:
+        if self._initialized:
+            return
+        raw_history = study.user_attrs.get("hypervolume_history", [])
+        if isinstance(raw_history, list):
+            self.history = list(raw_history)
+        if self.history:
+            self.best_hv = max(float(item["hypervolume"]) for item in self.history)
+        self._initialized = True
+
+    def _append_debug_row(
+        self,
+        *,
+        trial_number: int,
+        hv: float,
+        front_size: int,
+        max_runtime: float,
+        min_utility: float,
+        reference_valid: bool,
+    ) -> None:
+        debug_row = {
+            "trial_number": trial_number,
+            "hypervolume": hv,
+            "best_hypervolume": self.best_hv,
+            "stale_callbacks": self.stale_callbacks,
+            "front_size": front_size,
+            "max_runtime": max_runtime,
+            "min_utility": min_utility,
+            "runtime_ref": self.runtime_ref,
+            "utility_ref": self.utility_ref,
+            "reference_valid": reference_valid,
+        }
+        if self.debug:
+            print(f"[hv] {json.dumps(debug_row, sort_keys=True)}", file=sys.stderr, flush=True)
+        if self.debug_log_path is None:
+            return
+        self.debug_log_path.parent.mkdir(parents=True, exist_ok=True)
+        write_header = not self.debug_log_path.exists()
+        with self.debug_log_path.open("a", newline="") as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=list(debug_row.keys()))
+            if write_header:
+                writer.writeheader()
+            writer.writerow(debug_row)
 
     def __call__(self, study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
+        self._hydrate_from_study(study)
         completed = [
             t for t in study.get_trials(deepcopy=False)
             if t.state == TrialState.COMPLETE and t.values is not None
@@ -72,9 +131,43 @@ class HypervolumeStagnationStopper:
         if not completed:
             return
 
-        hv = compute_hypervolume_2d(completed)
+        max_runtime = max(float(t.values[0]) for t in completed)
+        min_utility = min(float(t.values[1]) for t in completed)
+        front_size = len(pareto_points(completed))
+        reference_valid = self.runtime_ref >= max_runtime and self.utility_ref <= min_utility
+        if not reference_valid:
+            study.set_user_attr("stop_reason", "hypervolume_reference_invalid")
+            study.set_user_attr("hypervolume_reference_warning", {
+                "runtime_ref": self.runtime_ref,
+                "utility_ref": self.utility_ref,
+                "max_runtime_seen": max_runtime,
+                "min_utility_seen": min_utility,
+            })
+            self._append_debug_row(
+                trial_number=trial.number,
+                hv=float("nan"),
+                front_size=front_size,
+                max_runtime=max_runtime,
+                min_utility=min_utility,
+                reference_valid=False,
+            )
+            return
+
+        hv = compute_hypervolume_2d(completed, self.runtime_ref, self.utility_ref)
         self.history.append({"trial_number": trial.number, "hypervolume": hv})
         study.set_user_attr("hypervolume_history", self.history)
+        study.set_user_attr("hypervolume_reference", {
+            "runtime_ref": self.runtime_ref,
+            "utility_ref": self.utility_ref,
+        })
+        self._append_debug_row(
+            trial_number=trial.number,
+            hv=hv,
+            front_size=front_size,
+            max_runtime=max_runtime,
+            min_utility=min_utility,
+            reference_valid=True,
+        )
 
         if len(completed) < self.min_trials:
             return
@@ -101,12 +194,34 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--study-name", default="tkus_ce_mo")
     parser.add_argument("--storage", default=None, help="Optuna storage URL. Defaults to local SQLite in artifacts.")
     parser.add_argument("--artifacts-dir", default="artifacts/optuna")
+    parser.add_argument(
+        "--artifact-store-dir",
+        default=None,
+        help="Artifact store directory for dashboard-visible uploads. Defaults to <artifacts-dir>/_dashboard_artifacts.",
+    )
     parser.add_argument("--k", type=int, default=500)
     parser.add_argument("--max-trials", type=int, default=1000)
     parser.add_argument("--timeout-seconds", type=int, default=None)
     parser.add_argument("--min-trials-before-stop", type=int, default=24)
     parser.add_argument("--stop-patience", type=int, default=12)
     parser.add_argument("--stop-min-improvement", type=float, default=1e-6)
+    parser.add_argument(
+        "--hypervolume-runtime-ref",
+        type=float,
+        default=1000.0,
+        help="Fixed runtime reference for hypervolume. Must be worse than useful runtime points.",
+    )
+    parser.add_argument(
+        "--hypervolume-utility-ref",
+        type=float,
+        default=0.0,
+        help="Fixed utility floor for hypervolume.",
+    )
+    parser.add_argument(
+        "--hypervolume-debug",
+        action="store_true",
+        help="Emit per-callback hypervolume diagnostics to stderr and CSV.",
+    )
     parser.add_argument(
         "--build-script",
         default="algorithms/tkus-ce/src/Main.java",
@@ -210,7 +325,10 @@ def representative_repeat_index(repeat_runtimes: list[float]) -> int | None:
 
 def build_runner_jar(args: argparse.Namespace, study_dir: Path) -> Path:
     if args.runner_jar is not None:
-        return Path(args.runner_jar)
+        runner_jar = Path(args.runner_jar)
+        if not runner_jar.exists():
+            raise FileNotFoundError(f"Runner JAR does not exist: {runner_jar}")
+        return runner_jar
 
     runner_dir = study_dir / "runner"
     runner_dir.mkdir(parents=True, exist_ok=True)
@@ -379,6 +497,7 @@ def trial_objective(
     args: argparse.Namespace,
     study_dir: Path,
     runner_jar: Path,
+    artifact_store: FileSystemArtifactStore,
 ) -> tuple[float, float]:
     params = {
         "n_grams": trial.suggest_categorical("n_grams", SEARCH_SPACE["n_grams"]),
@@ -410,7 +529,8 @@ def trial_objective(
         (trial_dir / "failure.json").write_text(json.dumps(summary, indent=2))
         trial.set_user_attr("artifact_dir", str(trial_dir))
         trial.set_user_attr("status", "failed")
-        return float("inf"), 0.0
+        update_trial_dashboard_note(trial, trial_dir, params, None, artifact_store)
+        raise RuntimeError(f"Trial {trial.number} failed for all seed runs.")
 
     runtime_values = [result.runtime_seconds for result in seed_results]
     average_utility_values = [result.average_utility for result in seed_results]
@@ -438,6 +558,7 @@ def trial_objective(
     trial.set_user_attr("artifact_dir", str(trial_dir))
     trial.set_user_attr("status", "ok")
     trial.set_user_attr("mean_peak_rss_mb", aggregated["mean_peak_rss_mb"])
+    update_trial_dashboard_note(trial, trial_dir, params, aggregated, artifact_store)
     return aggregated["mean_runtime_seconds"], aggregated["mean_average_utility"]
 
 
@@ -519,6 +640,93 @@ def plot_seed_convergence(iteration_metrics_path: Path, seed_dir: Path) -> None:
     plt.close()
 
 
+def maybe_upload_artifact(
+    artifact_store: FileSystemArtifactStore,
+    owner: optuna.Study | optuna.Trial,
+    file_path: Path,
+) -> tuple[str, str] | None:
+    if not file_path.exists():
+        return None
+    artifact_id = upload_artifact(
+        artifact_store=artifact_store,
+        file_path=str(file_path),
+        study_or_trial=owner,
+    )
+    return artifact_id, get_artifact_path(owner, artifact_id)
+
+
+def update_trial_dashboard_note(
+    trial: optuna.Trial,
+    trial_dir: Path,
+    params: dict[str, Any],
+    aggregated: dict[str, Any] | None,
+    artifact_store: FileSystemArtifactStore,
+) -> None:
+    artifact_lines: list[str] = []
+
+    for file_name in ["params.json", "summary.json" if aggregated is not None else "failure.json"]:
+        uploaded = maybe_upload_artifact(artifact_store, trial, trial_dir / file_name)
+        if uploaded is None:
+            continue
+        _, path = uploaded
+        artifact_lines.append(f"- [{file_name}]({path})")
+
+    uploaded = maybe_upload_artifact(artifact_store, trial, trial_dir / "convergence_topk_average.png")
+    trial_plot_markdown = ""
+    if uploaded is not None:
+        _, path = uploaded
+        artifact_lines.append(f"- [convergence_topk_average.png]({path})")
+        trial_plot_markdown = f"\n## Trial Convergence\n\n![Trial convergence]({path})\n"
+
+    for seed_dir in sorted(path for path in trial_dir.iterdir() if path.is_dir() and "_seed_" in path.name):
+        uploaded = maybe_upload_artifact(artifact_store, trial, seed_dir / "convergence_metrics.png")
+        if uploaded is None:
+            continue
+        _, path = uploaded
+        artifact_lines.append(f"- [{seed_dir.name}_convergence_metrics.png]({path})")
+
+    if aggregated is None:
+        body = "\n".join([
+            f"# Trial {trial.number}",
+            "",
+            "Execution failed.",
+            "",
+            "## Parameters",
+            "```json",
+            json.dumps(params, indent=2),
+            "```",
+            "",
+            "## Artifacts",
+            *artifact_lines,
+        ])
+        save_note(trial, body)
+        return
+
+    body = "\n".join([
+        f"# Trial {trial.number}",
+        "",
+        "## Parameters",
+        "```json",
+        json.dumps(params, indent=2),
+        "```",
+        "",
+        "## Aggregated Metrics",
+        "```json",
+        json.dumps({
+            "mean_runtime_seconds": aggregated["mean_runtime_seconds"],
+            "mean_average_utility": aggregated["mean_average_utility"],
+            "mean_peak_rss_mb": aggregated["mean_peak_rss_mb"],
+            "std_runtime_seconds": aggregated["std_runtime_seconds"],
+            "std_average_utility": aggregated["std_average_utility"],
+        }, indent=2),
+        "```",
+        trial_plot_markdown,
+        "## Artifacts",
+        *artifact_lines,
+    ])
+    save_note(trial, body)
+
+
 def dominates(a: tuple[float, float], b: tuple[float, float]) -> bool:
     return (a[0] <= b[0] and a[1] >= b[1]) and (a[0] < b[0] or a[1] > b[1])
 
@@ -534,23 +742,25 @@ def pareto_points(trials: list[optuna.trial.FrozenTrial]) -> list[tuple[float, f
     return front
 
 
-def compute_hypervolume_2d(trials: list[optuna.trial.FrozenTrial]) -> float:
+def compute_hypervolume_2d(
+    trials: list[optuna.trial.FrozenTrial],
+    runtime_ref: float,
+    utility_ref: float,
+) -> float:
     front = pareto_points(trials)
     if not front:
         return 0.0
 
-    runtime_ref = max(point[0] for point in front) * 1.05
-    utility_ref = min(point[1] for point in front) * 0.95
     if math.isclose(runtime_ref, max(point[0] for point in front)):
         runtime_ref += 1e-9
     if math.isclose(utility_ref, min(point[1] for point in front)):
         utility_ref -= 1e-9
 
     area = 0.0
-    current_utility_floor = utility_ref
+    previous_runtime = runtime_ref
     for runtime_value, utility_value in sorted(front, key=lambda item: item[0], reverse=True):
-        area += max(0.0, runtime_ref - runtime_value) * max(0.0, utility_value - current_utility_floor)
-        current_utility_floor = max(current_utility_floor, utility_value)
+        area += max(0.0, previous_runtime - runtime_value) * max(0.0, utility_value - utility_ref)
+        previous_runtime = min(previous_runtime, runtime_value)
     return area
 
 
@@ -619,11 +829,100 @@ def plot_study_outputs(study: optuna.Study, study_dir: Path) -> None:
         writer.writerows(front)
 
 
+def update_study_dashboard_note(
+    study: optuna.Study,
+    study_dir: Path,
+    summary: dict[str, Any] | None,
+    artifact_store: FileSystemArtifactStore,
+) -> None:
+    artifact_lines: list[str] = []
+    image_sections: list[str] = []
+    for artifact_name, title in [
+        ("pareto_scatter.png", "Pareto Scatter"),
+        ("hypervolume_history.png", "Hypervolume History"),
+    ]:
+        uploaded = maybe_upload_artifact(artifact_store, study, study_dir / artifact_name)
+        if uploaded is None:
+            continue
+        _, path = uploaded
+        artifact_lines.append(f"- [{artifact_name}]({path})")
+        image_sections.append(f"## {title}\n\n![{title}]({path})\n")
+
+    for artifact_name in ["trials.csv", "pareto_front.csv", "study_summary.json"]:
+        uploaded = maybe_upload_artifact(artifact_store, study, study_dir / artifact_name)
+        if uploaded is None:
+            continue
+        _, path = uploaded
+        artifact_lines.append(f"- [{artifact_name}]({path})")
+
+    summary_block = "Study outputs are still being generated."
+    if summary is not None:
+        summary_block = json.dumps({
+            "study_name": summary["study_name"],
+            "completed_trials": summary["completed_trials"],
+            "stop_reason": summary.get("stop_reason"),
+            "hypervolume_reference": summary["hypervolume_reference"],
+        }, indent=2)
+
+    body = "\n".join([
+        f"# {study.study_name}",
+        "",
+        "## Summary",
+        "```json",
+        summary_block,
+        "```",
+        "",
+        *image_sections,
+        "## Artifacts",
+        *artifact_lines,
+    ])
+    save_note(study, body)
+
+
+def write_study_bundle(study_dir: Path, summary: dict[str, Any]) -> Path:
+    bundle_dir = Path("studies") / summary["study_name"]
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    copied_study_dir = bundle_dir / "study-files"
+    if copied_study_dir.exists():
+        shutil.rmtree(copied_study_dir)
+    shutil.copytree(study_dir, copied_study_dir)
+
+    readme = f"""# {summary["study_name"]}
+
+This folder packages the study outputs for `{summary["study_name"]}`.
+
+## Read This First
+
+- `study-files/study_summary.json`
+- `study-files/trials.csv`
+- `study-files/pareto_front.csv`
+
+## Summary
+
+- Dataset(s): {", ".join(summary["datasets"])}
+- `k`: {summary["k"]}
+- Completed trials: {summary["completed_trials"]}
+- Stop reason: {summary.get("stop_reason")}
+- Hypervolume reference: runtime=`{summary["hypervolume_reference"]["runtime_ref"]}`, utility=`{summary["hypervolume_reference"]["utility_ref"]}`
+
+## Attached Artifacts
+
+- `study-files/`
+  - full copied study directory
+"""
+    (bundle_dir / "README.md").write_text(readme)
+    return bundle_dir
+
+
 def main() -> int:
     args = parse_args()
     artifacts_root = Path(args.artifacts_dir)
     study_dir = artifacts_root / args.study_name
     study_dir.mkdir(parents=True, exist_ok=True)
+    artifact_store_dir = Path(args.artifact_store_dir) if args.artifact_store_dir else (artifacts_root / "_dashboard_artifacts")
+    artifact_store_dir.mkdir(parents=True, exist_ok=True)
+    artifact_store = FileSystemArtifactStore(artifact_store_dir)
     runner_jar = build_runner_jar(args, study_dir)
 
     storage = args.storage or f"sqlite:///{(study_dir / 'study.sqlite3').resolve()}"
@@ -632,6 +931,10 @@ def main() -> int:
         min_trials=args.min_trials_before_stop,
         patience=args.stop_patience,
         min_improvement=args.stop_min_improvement,
+        runtime_ref=args.hypervolume_runtime_ref,
+        utility_ref=args.hypervolume_utility_ref,
+        debug=args.hypervolume_debug,
+        debug_log_path=study_dir / "hypervolume_debug_live.csv" if args.hypervolume_debug else None,
     )
 
     study = optuna.create_study(
@@ -642,7 +945,7 @@ def main() -> int:
         sampler=sampler,
     )
 
-    objective = lambda trial: trial_objective(trial, args, study_dir, runner_jar)
+    objective = lambda trial: trial_objective(trial, args, study_dir, runner_jar, artifact_store)
     study.optimize(
         objective,
         n_trials=args.max_trials,
@@ -658,6 +961,10 @@ def main() -> int:
         "storage": storage,
         "datasets": args.dataset,
         "k": args.k,
+        "hypervolume_reference": {
+            "runtime_ref": args.hypervolume_runtime_ref,
+            "utility_ref": args.hypervolume_utility_ref,
+        },
         "completed_trials": len([
             trial for trial in study.get_trials(deepcopy=False)
             if trial.state == TrialState.COMPLETE
@@ -674,6 +981,10 @@ def main() -> int:
         ],
     }
     (study_dir / "study_summary.json").write_text(json.dumps(summary, indent=2))
+    update_study_dashboard_note(study, study_dir, summary, artifact_store)
+    bundle_dir = write_study_bundle(study_dir, summary)
+    study.set_user_attr("study_bundle_dir", str(bundle_dir))
+    study.set_user_attr("artifact_store_dir", str(artifact_store_dir))
     return 0
 
 

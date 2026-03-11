@@ -1,0 +1,10 @@
+{
+  "n_grams": 0,
+  "model_confidence": 0.5,
+  "end_confidence": 1.0,
+  "end_prob_prior": 0.1,
+  "alpha": 1.0,
+  "rho": 0.5,
+  "pop_size": 1000,
+  "max_iterations": 50
+}

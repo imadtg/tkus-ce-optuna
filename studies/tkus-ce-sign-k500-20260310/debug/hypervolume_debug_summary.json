@@ -1,0 +1,45 @@
+{
+  "fixed_runtime_ref": 179.82719999999998,
+  "fixed_utility_ref": 885.560033371296,
+  "num_completed_trials": 36,
+  "dynamic_regression_trials": [
+    28,
+    33
+  ],
+  "dynamic_regressions": [
+    {
+      "trial_number": 28,
+      "runtime_seconds": 54.513999999999996,
+      "average_utility": 12078.278,
+      "front_numbers": "[6, 24, 26, 27, 4, 19, 25, 10, 15, 20, 3, 12, 28]",
+      "front_size": 13,
+      "front_changed": true,
+      "on_front": true,
+      "dynamic_runtime_ref": 57.2397,
+      "dynamic_utility_ref": 1338.5461488757044,
+      "dynamic_hv": 29273.28710660953,
+      "dynamic_hv_delta": -7239.455711869119,
+      "fixed_runtime_ref": 179.82719999999998,
+      "fixed_utility_ref": 885.560033371296,
+      "fixed_hv": 1402595.305095736,
+      "fixed_hv_delta": 189282.29047779692
+    },
+    {
+      "trial_number": 33,
+      "runtime_seconds": 1.004,
+      "average_utility": 3221.284,
+      "front_numbers": "[33, 24, 29, 26, 27, 4, 19, 25, 30, 31, 28]",
+      "front_size": 11,
+      "front_changed": true,
+      "on_front": true,
+      "dynamic_runtime_ref": 57.2397,
+      "dynamic_utility_ref": 3060.2198,
+      "dynamic_hv": 24580.52123574003,
+      "dynamic_hv_delta": -4692.765870869498,
+      "fixed_runtime_ref": 179.82719999999998,
+      "fixed_utility_ref": 885.560033371296,
+      "fixed_hv": 1402595.305095736,
+      "fixed_hv_delta": 0.0
+    }
+  ]
+}

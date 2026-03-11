@@ -1,0 +1,4 @@
+studies/**/study-files/**/*.png filter=lfs diff=lfs merge=lfs -text
+studies/**/study-files/**/*.sqlite3 filter=lfs diff=lfs merge=lfs -text
+studies/**/study-files/**/*.csv filter=lfs diff=lfs merge=lfs -text
+studies/**/study-files/**/*.txt filter=lfs diff=lfs merge=lfs -text

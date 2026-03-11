@@ -8,7 +8,8 @@ This repo follows the DVC playground pattern: the algorithm source is treated as
 
 - `algorithms/tkus-ce/src.dvc`: imported TKUS-CE source dependency
 - `algorithms/tkus-ce/dvc.yaml`: compile stage for the imported algorithm
-- `scripts/optuna_search.py`: self-contained `uv` Optuna driver
+- `pyproject.toml` / `uv.lock`: pinned Python environment for the harness
+- `scripts/optuna_search.py`: Optuna driver executed from the project `uv` environment
 - `scripts/run_optuna_search.sh`: thin launcher for the Optuna driver
 - `studies/`: example study notes and commands
 - `datasets/`: dataset manifests and local dataset conventions
@@ -24,13 +25,16 @@ If local TKUS-CE changes are required for telemetry or CLI flags, push those cha
 
 ## Bootstrap
 
-1. Pull or update the imported TKUS-CE source.
-2. Compile the runner with DVC.
-3. Launch Optuna with the compiled runner jar.
+1. Sync the Python environment with `uv`.
+2. Pull or update the imported TKUS-CE source.
+3. Compile the runner with DVC.
+4. Launch Optuna with the compiled runner jar.
 
 Example:
 
 ```bash
+uv sync
+
 dvc pull algorithms/tkus-ce/src.dvc
 
 dvc repro algorithms/tkus-ce:compile
@@ -46,4 +50,5 @@ dvc repro algorithms/tkus-ce:compile
 
 - `artifacts/` is intentionally untracked.
 - The Optuna driver records per-trial files and study summaries locally.
+- Python dependencies are no longer resolved from inline script metadata; use `uv sync` to materialize the pinned project environment.
 - The driver expects output lines containing `#UTIL:` values.

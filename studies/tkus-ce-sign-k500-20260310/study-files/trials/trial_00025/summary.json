@@ -1,0 +1,122 @@
+{
+  "params": {
+    "n_grams": 1,
+    "model_confidence": 0.9,
+    "end_confidence": 1.0,
+    "end_prob_prior": 0.5,
+    "alpha": 10.0,
+    "rho": 0.1,
+    "pop_size": 50,
+    "max_iterations": 1000
+  },
+  "datasets": [
+    "/home/pc/Desktop/TKUS-CE/testdata/smoke/SIGN_sequence_utility.txt"
+  ],
+  "k": 500,
+  "seeds": [
+    11,
+    29,
+    47,
+    71,
+    101
+  ],
+  "mean_runtime_seconds": 4.2,
+  "std_runtime_seconds": 0.10469001862641938,
+  "mean_average_utility": 7685.223106586825,
+  "std_average_utility": 112.93488791545583,
+  "mean_total_utility": 3844185.8,
+  "mean_peak_rss_mb": 269.20078125,
+  "std_peak_rss_mb": 6.412178849475134,
+  "seed_runs": [
+    {
+      "seed": 11,
+      "runtime_seconds": 4.17,
+      "peak_rss_mb": 272.1640625,
+      "average_utility": 7736.09,
+      "total_utility": 3868045,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_11/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_11/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        4.17
+      ],
+      "repeat_peak_rss_mb": [
+        272.1640625
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 29,
+      "runtime_seconds": 4.09,
+      "peak_rss_mb": 264.33203125,
+      "average_utility": 7654.236,
+      "total_utility": 3827118,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_29/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_29/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        4.09
+      ],
+      "repeat_peak_rss_mb": [
+        264.33203125
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 47,
+      "runtime_seconds": 4.4,
+      "peak_rss_mb": 278.0,
+      "average_utility": 7871.233532934131,
+      "total_utility": 3943488,
+      "num_sequences": 501,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_47/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_47/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        4.4
+      ],
+      "repeat_peak_rss_mb": [
+        278.0
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 71,
+      "runtime_seconds": 4.17,
+      "peak_rss_mb": 259.7578125,
+      "average_utility": 7535.222,
+      "total_utility": 3767611,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_71/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_71/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        4.17
+      ],
+      "repeat_peak_rss_mb": [
+        259.7578125
+      ],
+      "representative_repeat_index": 0
+    },
+    {
+      "seed": 101,
+      "runtime_seconds": 4.17,
+      "peak_rss_mb": 271.75,
+      "average_utility": 7629.334,
+      "total_utility": 3814667,
+      "num_sequences": 500,
+      "return_code": 0,
+      "output_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_101/repeat_00/output.txt",
+      "iteration_metrics_path": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025/SIGN_sequence_utility_seed_101/repeat_00/iteration_metrics.csv",
+      "repeat_runtimes": [
+        4.17
+      ],
+      "repeat_peak_rss_mb": [
+        271.75
+      ],
+      "representative_repeat_index": 0
+    }
+  ]
+}

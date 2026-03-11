@@ -1,0 +1,228 @@
+{
+  "study_name": "tkus-ce-sign-k500-20260310",
+  "storage": "sqlite:////home/pc/Desktop/tkus-ce-optuna/artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/study.sqlite3",
+  "datasets": [
+    "/home/pc/Desktop/TKUS-CE/testdata/smoke/SIGN_sequence_utility.txt"
+  ],
+  "k": 500,
+  "completed_trials": 36,
+  "stop_reason": "hypervolume_plateau",
+  "best_trials": [
+    {
+      "number": 4,
+      "values": [
+        2.564,
+        6195.454
+      ],
+      "params": {
+        "n_grams": 0,
+        "model_confidence": 0.9,
+        "end_confidence": 0.9,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.2,
+        "pop_size": 200,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00004"
+    },
+    {
+      "number": 19,
+      "values": [
+        3.822,
+        6303.0468
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 1.0,
+        "end_confidence": 0.9,
+        "end_prob_prior": 0.5,
+        "alpha": 1.0,
+        "rho": 0.1,
+        "pop_size": 200,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00019"
+    },
+    {
+      "number": 24,
+      "values": [
+        1.384,
+        4613.500356886228
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.9,
+        "end_confidence": 0.9,
+        "end_prob_prior": 0.5,
+        "alpha": 1.0,
+        "rho": 0.1,
+        "pop_size": 50,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00024"
+    },
+    {
+      "number": 25,
+      "values": [
+        4.2,
+        7685.223106586825
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.9,
+        "end_confidence": 1.0,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.1,
+        "pop_size": 50,
+        "max_iterations": 1000
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00025"
+    },
+    {
+      "number": 26,
+      "values": [
+        1.698,
+        5167.039614371258
+      ],
+      "params": {
+        "n_grams": 5,
+        "model_confidence": 1.0,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 0.1,
+        "rho": 0.1,
+        "pop_size": 200,
+        "max_iterations": 50
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00026"
+    },
+    {
+      "number": 27,
+      "values": [
+        2.2359999999999998,
+        6016.892
+      ],
+      "params": {
+        "n_grams": 0,
+        "model_confidence": 0.9,
+        "end_confidence": 1.0,
+        "end_prob_prior": 0.1,
+        "alpha": 1.0,
+        "rho": 0.1,
+        "pop_size": 50,
+        "max_iterations": 1000
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00027"
+    },
+    {
+      "number": 28,
+      "values": [
+        54.513999999999996,
+        12078.278
+      ],
+      "params": {
+        "n_grams": 5,
+        "model_confidence": 1.0,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 0.1,
+        "rho": 0.2,
+        "pop_size": 1000,
+        "max_iterations": 1000
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00028"
+    },
+    {
+      "number": 29,
+      "values": [
+        1.448,
+        4802.618126946108
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.5,
+        "end_confidence": 1.0,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.1,
+        "pop_size": 200,
+        "max_iterations": 50
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00029"
+    },
+    {
+      "number": 30,
+      "values": [
+        5.896,
+        8487.48836007984
+      ],
+      "params": {
+        "n_grams": 0,
+        "model_confidence": 0.9,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 0.1,
+        "rho": 0.1,
+        "pop_size": 1000,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00030"
+    },
+    {
+      "number": 31,
+      "values": [
+        12.35,
+        10532.024885429142
+      ],
+      "params": {
+        "n_grams": 1,
+        "model_confidence": 0.5,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.1,
+        "pop_size": 200,
+        "max_iterations": 1000
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00031"
+    },
+    {
+      "number": 33,
+      "values": [
+        1.004,
+        3221.284
+      ],
+      "params": {
+        "n_grams": 5,
+        "model_confidence": 0.5,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 10.0,
+        "rho": 0.1,
+        "pop_size": 50,
+        "max_iterations": 50
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00033"
+    },
+    {
+      "number": 35,
+      "values": [
+        19.822,
+        10757.5536
+      ],
+      "params": {
+        "n_grams": 5,
+        "model_confidence": 0.9,
+        "end_confidence": 0.5,
+        "end_prob_prior": 0.5,
+        "alpha": 1.0,
+        "rho": 0.5,
+        "pop_size": 1000,
+        "max_iterations": 200
+      },
+      "artifact_dir": "artifacts/optuna-monitor/tkus-ce-sign-k500-20260310/trials/trial_00035"
+    }
+  ]
+}
