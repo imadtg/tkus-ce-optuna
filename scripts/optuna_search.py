@@ -223,9 +223,19 @@ def parse_args() -> argparse.Namespace:
         help="Emit per-callback hypervolume diagnostics to stderr and CSV.",
     )
     parser.add_argument(
+        "--runner-release",
+        default="latest",
+        help="Released TKUS-CE runner to use when --runner-jar is not provided: latest, edge, or an exact version.",
+    )
+    parser.add_argument(
+        "--runner-repo",
+        default="imadtg/TKUS-CE",
+        help="GitHub repository that publishes the TKUS-CE release artifacts.",
+    )
+    parser.add_argument(
         "--build-script",
         default="algorithms/tkus-ce/src/Main.java",
-        help="JBang source used to build the runnable fat JAR once per study.",
+        help="Deprecated source-build fallback. Kept only for compatibility with older local workflows.",
     )
     parser.add_argument("--runner-jar", default=None, help="Use an existing runnable jar instead of building one.")
     parser.add_argument("--runtime-repeats", type=int, default=1)
@@ -323,28 +333,56 @@ def representative_repeat_index(repeat_runtimes: list[float]) -> int | None:
     return min(range(len(repeat_runtimes)), key=lambda index: abs(repeat_runtimes[index] - target))
 
 
+def completed_trial_count(study: optuna.Study) -> int:
+    return len([
+        trial for trial in study.get_trials(deepcopy=False)
+        if trial.state == TrialState.COMPLETE and trial.values is not None
+    ])
+
+
 def build_runner_jar(args: argparse.Namespace, study_dir: Path) -> Path:
+    runner_dir = study_dir / "runner"
+    runner_dir.mkdir(parents=True, exist_ok=True)
+    resolution_path = runner_dir / "resolution.json"
+
     if args.runner_jar is not None:
         runner_jar = Path(args.runner_jar)
         if not runner_jar.exists():
             raise FileNotFoundError(f"Runner JAR does not exist: {runner_jar}")
+        if not resolution_path.exists():
+            local_resolution = {
+                "runner_requested_spec": "local-path",
+                "runner_repo": args.runner_repo,
+                "runner_output_jar": str(runner_jar.resolve()),
+            }
+            build_metadata_path = runner_jar.with_suffix(runner_jar.suffix + ".build.json")
+            if build_metadata_path.exists():
+                local_resolution["build_metadata"] = json.loads(build_metadata_path.read_text())
+                for key in ["version", "release_channel", "git_ref", "git_sha", "repository", "built_at_utc"]:
+                    if key in local_resolution["build_metadata"]:
+                        local_resolution[f"runner_{key}"] = local_resolution["build_metadata"][key]
+            resolution_path.write_text(json.dumps(local_resolution, indent=2))
         return runner_jar
 
-    runner_dir = study_dir / "runner"
-    runner_dir.mkdir(parents=True, exist_ok=True)
-    runner_jar = runner_dir / "tkus-ce-fatjar.jar"
-    if runner_jar.exists():
+    runner_jar = runner_dir / "tkus-ce-runner.jar"
+    if runner_jar.exists() and resolution_path.exists():
         return runner_jar
-    command = ["jbang", "--fresh", "export", "fatjar", "-O", str(runner_jar), args.build_script]
-    env = os.environ.copy()
-    env.setdefault("JBANG_DIR", str((Path(__file__).resolve().parent.parent / ".cache" / "jbang").resolve()))
-    subprocess.run(command, check=True, env=env)
-    build_metadata = {
-        "build_script": args.build_script,
-        "runner_jar": str(runner_jar),
-        "command": command,
-    }
-    (runner_dir / "build.json").write_text(json.dumps(build_metadata, indent=2))
+
+    resolver = Path(__file__).with_name("fetch_tkus_ce_release.py")
+    command = [
+        "uv",
+        "run",
+        str(resolver),
+        "--repo",
+        args.runner_repo,
+        "--spec",
+        args.runner_release,
+        "--output-jar",
+        str(runner_jar),
+        "--output-json",
+        str(resolution_path),
+    ]
+    subprocess.run(command, check=True)
     return runner_jar
 
 
@@ -590,8 +628,8 @@ def plot_trial_convergence(seed_results: list[SeedRunResult], trial_dir: Path) -
         plt.plot(range(len(series)), series, alpha=0.25, linewidth=1, label="seed" if idx == 0 else None)
     plt.plot(range(len(averaged)), averaged, color="black", linewidth=2, label="mean")
     plt.xlabel("CE iteration")
-    plt.ylabel("Top-k average utility so far")
-    plt.title("Convergence by seed")
+    plt.ylabel("Best top-k average utility so far")
+    plt.title("Best top-k average convergence by seed")
     plt.legend()
     plt.tight_layout()
     plt.savefig(trial_dir / "convergence_topk_average.png", dpi=160)
@@ -609,13 +647,13 @@ def plot_seed_convergence(iteration_metrics_path: Path, seed_dir: Path) -> None:
 
     elapsed_seconds = [float(row["elapsed_ms"]) / 1000.0 for row in rows]
     iterations = [int(row["iteration"]) for row in rows]
-    average_utility = [float(row["average_utility_so_far"]) for row in rows]
+    top_k_average_utility = [float(row["top_k_average_utility_so_far"]) for row in rows]
     best_elite_utility = [float(row["best_elite_utility"]) for row in rows]
     min_utility = [float(row["min_utility"]) for row in rows]
     min_elite_utility = [float(row["min_elite_utility"]) for row in rows]
 
     plt.figure(figsize=(12, 7))
-    plt.plot(elapsed_seconds, average_utility, label="Average utility", linewidth=2.2)
+    plt.plot(elapsed_seconds, top_k_average_utility, label="Best top-k average utility so far", linewidth=2.2)
     plt.plot(elapsed_seconds, best_elite_utility, label="Best elite utility", linewidth=1.8)
     plt.plot(elapsed_seconds, min_utility, label="Min utility", linewidth=1.8)
     plt.plot(elapsed_seconds, min_elite_utility, label="Min elite utility", linewidth=1.8)
@@ -902,6 +940,7 @@ This folder packages the study outputs for `{summary["study_name"]}`.
 
 - Dataset(s): {", ".join(summary["datasets"])}
 - `k`: {summary["k"]}
+- Runner: `{summary["runner"].get("runner_resolved_tag", summary["runner"].get("runner_requested_spec", "unknown"))}` @ `{summary["runner"].get("runner_git_sha", "unknown")}`
 - Completed trials: {summary["completed_trials"]}
 - Stop reason: {summary.get("stop_reason")}
 - Hypervolume reference: runtime=`{summary["hypervolume_reference"]["runtime_ref"]}`, utility=`{summary["hypervolume_reference"]["utility_ref"]}`
@@ -924,6 +963,10 @@ def main() -> int:
     artifact_store_dir.mkdir(parents=True, exist_ok=True)
     artifact_store = FileSystemArtifactStore(artifact_store_dir)
     runner_jar = build_runner_jar(args, study_dir)
+    runner_resolution_path = study_dir / "runner" / "resolution.json"
+    runner_resolution = (
+        json.loads(runner_resolution_path.read_text()) if runner_resolution_path.exists() else {"runner_output_jar": str(runner_jar)}
+    )
 
     storage = args.storage or f"sqlite:///{(study_dir / 'study.sqlite3').resolve()}"
     sampler = optuna.samplers.NSGAIISampler(seed=42)
@@ -946,12 +989,23 @@ def main() -> int:
     )
 
     objective = lambda trial: trial_objective(trial, args, study_dir, runner_jar, artifact_store)
-    study.optimize(
-        objective,
-        n_trials=args.max_trials,
-        timeout=args.timeout_seconds,
-        callbacks=[stopper],
-    )
+    started = time.monotonic()
+    while completed_trial_count(study) < args.max_trials:
+        remaining_timeout = None
+        if args.timeout_seconds is not None:
+            elapsed = time.monotonic() - started
+            remaining_timeout = max(0.0, args.timeout_seconds - elapsed)
+            if remaining_timeout <= 0.0:
+                break
+
+        study.optimize(
+            objective,
+            n_trials=1,
+            timeout=remaining_timeout,
+            callbacks=[stopper],
+        )
+        if study.user_attrs.get("stop_reason") is not None:
+            break
 
     write_trials_csv(study, study_dir / "trials.csv")
     plot_study_outputs(study, study_dir)
@@ -961,14 +1015,12 @@ def main() -> int:
         "storage": storage,
         "datasets": args.dataset,
         "k": args.k,
+        "runner": runner_resolution,
         "hypervolume_reference": {
             "runtime_ref": args.hypervolume_runtime_ref,
             "utility_ref": args.hypervolume_utility_ref,
         },
-        "completed_trials": len([
-            trial for trial in study.get_trials(deepcopy=False)
-            if trial.state == TrialState.COMPLETE
-        ]),
+        "completed_trials": completed_trial_count(study),
         "stop_reason": study.user_attrs.get("stop_reason"),
         "best_trials": [
             {
