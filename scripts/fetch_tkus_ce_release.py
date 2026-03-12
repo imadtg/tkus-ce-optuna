@@ -20,7 +20,7 @@ DEFAULT_REPO = "imadtg/TKUS-CE"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Download a released TKUS-CE runner JAR and record exact provenance.")
     parser.add_argument("--repo", default=DEFAULT_REPO, help="GitHub repository in owner/name form.")
-    parser.add_argument("--spec", default="latest", help="Release selector: latest, edge, x.y.z, or vx.y.z.")
+    parser.add_argument("--spec", default="latest", help="Release selector: latest, x.y.z, or vx.y.z.")
     parser.add_argument("--output-jar", required=True, help="Path to the downloaded JAR.")
     parser.add_argument("--output-json", required=True, help="Path to the provenance JSON.")
     return parser.parse_args()
@@ -90,8 +90,6 @@ def resolve_release(repo: str, spec: str) -> dict[str, Any]:
     normalized = spec.strip()
     if normalized == "latest":
         url = f"https://api.github.com/repos/{repo}/releases/latest"
-    elif normalized == "edge":
-        url = f"https://api.github.com/repos/{repo}/releases/tags/edge"
     else:
         tag = normalized if normalized.startswith("v") else f"v{normalized}"
         url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"

@@ -6,7 +6,7 @@ This repo now consumes released `TKUS-CE` runner jars by default instead of rebu
 
 ## Layout
 
-- `scripts/fetch_tkus_ce_release.py`: resolves `latest`, `edge`, or an exact `TKUS-CE` version from GitHub Releases
+- `scripts/fetch_tkus_ce_release.py`: resolves `latest` or an exact `TKUS-CE` version from GitHub Releases
 - `pyproject.toml` / `uv.lock`: pinned Python environment for the harness
 - `scripts/optuna_search.py`: Optuna driver executed from the project `uv` environment
 - `scripts/run_optuna_search.sh`: thin launcher for the Optuna driver
@@ -20,7 +20,7 @@ This repo resolves runners from the published `TKUS-CE` GitHub releases:
 
 - `https://github.com/imadtg/TKUS-CE.git`
 
-Use `--runner-release latest` for the latest semver release, `--runner-release edge` for the rolling main-branch build, or `--runner-release <x.y.z>` for an exact version. Every study records the resolved tag and commit SHA in `runner/resolution.json` and `study_summary.json`.
+Use `--runner-release latest` for the latest semver release or `--runner-release <x.y.z>` for an exact version. Every study records the resolved tag and commit SHA in `runner/resolution.json` and `study_summary.json`.
 
 ## Bootstrap
 

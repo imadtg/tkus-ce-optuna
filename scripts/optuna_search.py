@@ -225,7 +225,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--runner-release",
         default="latest",
-        help="Released TKUS-CE runner to use when --runner-jar is not provided: latest, edge, or an exact version.",
+        help="Released TKUS-CE runner to use when --runner-jar is not provided: latest or an exact version.",
     )
     parser.add_argument(
         "--runner-repo",
