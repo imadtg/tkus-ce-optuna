@@ -1,0 +1,175 @@
+{
+  "trial_number": 177,
+  "runtime_seconds": 6.082,
+  "average_utility": 8664.473600000001,
+  "params": {
+    "n_grams": 0,
+    "model_confidence": 0.5,
+    "end_confidence": 1.0,
+    "end_prob_prior": 0.1,
+    "alpha": 10.0,
+    "rho": 0.1,
+    "pop_size": 200,
+    "max_iterations": 1000
+  },
+  "seed": 11,
+  "wall_seconds": 11.245650344999376,
+  "jfr_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00177/seed_11.jfr",
+  "output_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00177/seed_11_output.txt",
+  "iteration_metrics_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00177/seed_11_iteration_metrics.csv",
+  "sample_count": 1002,
+  "top_self_hotspots": [
+    {
+      "function": "NGramModel.sampleItemset",
+      "samples": 485,
+      "pct": 48.40319361277445
+    },
+    {
+      "function": "java.util.HashMap.getNode",
+      "samples": 195,
+      "pct": 19.46107784431138
+    },
+    {
+      "function": "Particle.matchItemset",
+      "samples": 139,
+      "pct": 13.872255489021956
+    },
+    {
+      "function": "Particle.computeExtensionFromParent",
+      "samples": 26,
+      "pct": 2.5948103792415167
+    },
+    {
+      "function": "java.util.ArrayList.sort",
+      "samples": 16,
+      "pct": 1.5968063872255487
+    },
+    {
+      "function": "java.util.BitSet.nextSetBit",
+      "samples": 14,
+      "pct": 1.3972055888223553
+    },
+    {
+      "function": "AlgoTKUSCE.samplePopulation",
+      "samples": 9,
+      "pct": 0.8982035928143712
+    },
+    {
+      "function": "AlgoTKUSCE.insertTopList",
+      "samples": 9,
+      "pct": 0.8982035928143712
+    },
+    {
+      "function": "java.util.Arrays.copyOf",
+      "samples": 9,
+      "pct": 0.8982035928143712
+    },
+    {
+      "function": "java.util.HashMap.computeIfAbsent",
+      "samples": 8,
+      "pct": 0.7984031936127743
+    },
+    {
+      "function": "java.util.HashMap.resize",
+      "samples": 7,
+      "pct": 0.6986027944111777
+    },
+    {
+      "function": "java.util.HashMap$HashIterator.nextNode",
+      "samples": 6,
+      "pct": 0.5988023952095809
+    },
+    {
+      "function": "java.util.HashMap$TreeNode.find",
+      "samples": 6,
+      "pct": 0.5988023952095809
+    },
+    {
+      "function": "java.lang.Integer.equals",
+      "samples": 5,
+      "pct": 0.499001996007984
+    },
+    {
+      "function": "java.util.HashMap.put",
+      "samples": 4,
+      "pct": 0.39920159680638717
+    }
+  ],
+  "top_inclusive_hotspots": [
+    {
+      "function": "Main.main",
+      "samples": 1001,
+      "pct": 99.9001996007984
+    },
+    {
+      "function": "picocli.CommandLine.execute",
+      "samples": 997,
+      "pct": 99.50099800399201
+    },
+    {
+      "function": "picocli.CommandLine.access$1500",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "Main.call",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "picocli.CommandLine.executeUserObject",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.handle",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.execute",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "picocli.CommandLine$AbstractParseResultHandler.execute",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "AlgoTKUSCE.runAlgorithm",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent",
+      "samples": 996,
+      "pct": 99.40119760479041
+    },
+    {
+      "function": "AlgoTKUSCE.samplePopulation",
+      "samples": 965,
+      "pct": 96.30738522954093
+    },
+    {
+      "function": "AlgoTKUSCE.update",
+      "samples": 956,
+      "pct": 95.40918163672654
+    },
+    {
+      "function": "NGramModel.sampleItemset",
+      "samples": 685,
+      "pct": 68.36327345309381
+    },
+    {
+      "function": "Particle.sExtend",
+      "samples": 239,
+      "pct": 23.852295409181636
+    },
+    {
+      "function": "Particle.computeChildExtensionList",
+      "samples": 229,
+      "pct": 22.85429141716567
+    }
+  ]
+}

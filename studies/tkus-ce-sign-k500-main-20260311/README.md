@@ -9,6 +9,7 @@ Final analysis for the cleaned 100-trial SIGN / `k=500` study.
 - `study-files/pareto_front.csv`
 - `findings.md`
 - `frontier-analysis.md`
+- `profile-findings.md`
 - `defaults-recommendation.md`
 - `hypervolume-notes.md`
 
@@ -153,10 +154,14 @@ The final `study_summary.json` has no `stop_reason`, which means the run stopped
 
 - `study-files/`
   - copied final study directory from `artifacts/optuna-monitor/tkus-ce-sign-k500-main-20260311`
+- `pareto-profile-seed-11/`
+  - JFR profiles and hotspot summaries for all Pareto-front configurations using seed `11`
 - `findings.md`
   - ranked findings from the completed run
 - `frontier-analysis.md`
   - full Pareto-front interpretation
+- `profile-findings.md`
+  - hotspot summary and optimization targets from the Pareto-front profile pass
 - `defaults-recommendation.md`
   - conservative and aggressive default-setting guidance relative to current `TKUS-CE`
 - `hypervolume-notes.md`

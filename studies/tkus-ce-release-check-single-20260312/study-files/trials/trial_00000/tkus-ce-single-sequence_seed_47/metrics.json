@@ -1,0 +1,18 @@
+{
+  "seed": 47,
+  "runtime_seconds": 9.26,
+  "peak_rss_mb": 319.24609375,
+  "average_utility": 312.0,
+  "total_utility": 312,
+  "num_sequences": 1,
+  "return_code": 0,
+  "output_path": "artifacts/optuna/tkus-ce-release-check-single-20260312/trials/trial_00000/tkus-ce-single-sequence_seed_47/repeat_00/output.txt",
+  "iteration_metrics_path": "artifacts/optuna/tkus-ce-release-check-single-20260312/trials/trial_00000/tkus-ce-single-sequence_seed_47/repeat_00/iteration_metrics.csv",
+  "repeat_runtimes": [
+    9.26
+  ],
+  "repeat_peak_rss_mb": [
+    319.24609375
+  ],
+  "representative_repeat_index": 0
+}

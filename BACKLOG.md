@@ -13,10 +13,17 @@ If the emitted metric is not monotone, that is a source bug in the sibling `TKUS
 - publish a new artifact / release of `TKUS-CE`
 - then update this harness to consume that corrected build
 
-Context:
+Current local status:
+
+- analysis of the saved SIGN / `k=500` study showed that `top_k_average_utility_so_far` only dipped before the retained list had filled to `k`
+- after `retained_top_k_size >= k`, the series was monotone in all checked files
+- the sibling source has now been patched locally so the top-k average stays at `0` until a full `k` exists, then reports the retained top-k average
+
+Remaining work:
 
 - this has not been fully closed out yet because the clean jar packaging/release path is not finalized
 - the GitHub CI workflows for jar publishing have not yet been pushed to remote
+- the corrected sibling jar still needs to be rebuilt and released, then consumed here
 
 ## 2. Finish the jar packaging / release flow for `TKUS-CE`
 
@@ -32,6 +39,17 @@ This means the release design should support:
 - manual releases first
 - easy verification before automating anything
 - later transition to cleaner artifact sourcing in this repo
+
+Current local status:
+
+- the sibling `TKUS-CE` repo now has a local manual release script: `scripts/manual-release.sh`
+- local release docs were added at `docs/manual-releases.md`
+- the unpublished GitHub release workflows were adjusted to manual `workflow_dispatch` on `ubuntu-latest` instead of the self-hosted runner
+
+Remaining work:
+
+- push that release-flow work to the sibling remote when ready
+- decide whether GitHub Releases alone are enough for now, or whether GitHub Packages should also be kept active
 
 ## 3. Iteration-speed visualization needs design work
 
@@ -61,6 +79,10 @@ The desired semantics are:
 
 - budget should reflect successful completed trials
 - failed trials may exist operationally, but they should not reduce the number of real evaluations obtained
+
+Current local status:
+
+- the Optuna harness now treats `--max-trials` as a completed-trial budget by optimizing one trial at a time until the desired number of successful completed evaluations exists
 
 ## 6. Failed-run cleanup policy
 

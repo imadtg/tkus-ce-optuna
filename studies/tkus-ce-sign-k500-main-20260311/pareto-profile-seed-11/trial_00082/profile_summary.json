@@ -1,0 +1,175 @@
+{
+  "trial_number": 82,
+  "runtime_seconds": 0.63,
+  "average_utility": 1471.0669146013406,
+  "params": {
+    "n_grams": 1,
+    "model_confidence": 1.0,
+    "end_confidence": 1.0,
+    "end_prob_prior": 0.1,
+    "alpha": 1.0,
+    "rho": 0.1,
+    "pop_size": 50,
+    "max_iterations": 50
+  },
+  "seed": 11,
+  "wall_seconds": 1.6601590310001484,
+  "jfr_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00082/seed_11.jfr",
+  "output_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00082/seed_11_output.txt",
+  "iteration_metrics_path": "/home/pc/Desktop/tkus-ce-optuna/studies/tkus-ce-sign-k500-main-20260311/pareto-profile-seed-11/trial_00082/seed_11_iteration_metrics.csv",
+  "sample_count": 81,
+  "top_self_hotspots": [
+    {
+      "function": "java.util.BitSet.nextSetBit",
+      "samples": 9,
+      "pct": 11.11111111111111
+    },
+    {
+      "function": "Particle.computeExtensionFromParent",
+      "samples": 8,
+      "pct": 9.876543209876543
+    },
+    {
+      "function": "java.util.HashMap$HashIterator.nextNode",
+      "samples": 5,
+      "pct": 6.172839506172839
+    },
+    {
+      "function": "NGramModel.sampleItemset",
+      "samples": 5,
+      "pct": 6.172839506172839
+    },
+    {
+      "function": "NGramModel.getContextItems",
+      "samples": 5,
+      "pct": 6.172839506172839
+    },
+    {
+      "function": "AlgoTKUSCE.buildFilteredDatabase",
+      "samples": 4,
+      "pct": 4.938271604938271
+    },
+    {
+      "function": "AlgoTKUSCE.parseSequenceLine",
+      "samples": 3,
+      "pct": 3.7037037037037033
+    },
+    {
+      "function": "java.util.HashMap.getNode",
+      "samples": 3,
+      "pct": 3.7037037037037033
+    },
+    {
+      "function": "java.util.HashMap.putVal",
+      "samples": 3,
+      "pct": 3.7037037037037033
+    },
+    {
+      "function": "java.util.HashMap.computeIfAbsent",
+      "samples": 3,
+      "pct": 3.7037037037037033
+    },
+    {
+      "function": "java.util.regex.Pattern$BmpCharPropertyGreedy.match",
+      "samples": 2,
+      "pct": 2.4691358024691357
+    },
+    {
+      "function": "java.util.HashMap.hash",
+      "samples": 2,
+      "pct": 2.4691358024691357
+    },
+    {
+      "function": "java.util.ArrayList.sort",
+      "samples": 2,
+      "pct": 2.4691358024691357
+    },
+    {
+      "function": "java.lang.String.getBytesNoRepl1",
+      "samples": 1,
+      "pct": 1.2345679012345678
+    },
+    {
+      "function": "java.util.jar.JarFile$JarFileEntry.<init>",
+      "samples": 1,
+      "pct": 1.2345679012345678
+    }
+  ],
+  "top_inclusive_hotspots": [
+    {
+      "function": "Main.main",
+      "samples": 81,
+      "pct": 100.0
+    },
+    {
+      "function": "picocli.CommandLine.execute",
+      "samples": 75,
+      "pct": 92.5925925925926
+    },
+    {
+      "function": "picocli.CommandLine.access$1500",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "Main.call",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "picocli.CommandLine.executeUserObject",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.handle",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.execute",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "picocli.CommandLine$AbstractParseResultHandler.execute",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "AlgoTKUSCE.runAlgorithm",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "picocli.CommandLine$RunLast.executeUserObjectOfLastSubcommandWithSameParent",
+      "samples": 74,
+      "pct": 91.35802469135803
+    },
+    {
+      "function": "AlgoTKUSCE.samplePopulation",
+      "samples": 50,
+      "pct": 61.72839506172839
+    },
+    {
+      "function": "AlgoTKUSCE.update",
+      "samples": 45,
+      "pct": 55.55555555555556
+    },
+    {
+      "function": "Particle.sExtend",
+      "samples": 30,
+      "pct": 37.03703703703704
+    },
+    {
+      "function": "Particle.computeChildExtensionList",
+      "samples": 28,
+      "pct": 34.5679012345679
+    },
+    {
+      "function": "Particle.computeExtensionFromParent",
+      "samples": 25,
+      "pct": 30.864197530864196
+    }
+  ]
+}
